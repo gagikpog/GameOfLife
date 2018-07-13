@@ -1,0 +1,9 @@
+.vs/
+GameOfLife.VC.db
+GameOfLife.VC.VC.opendb
+GameOfLife/Debug/
+GameOfLife/Release/
+*.metagen
+*.pdb
+*.ilk
+desktop.ini
