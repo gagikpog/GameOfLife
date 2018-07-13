@@ -6,4 +6,5 @@ GameOfLife/Release/
 *.metagen
 *.pdb
 *.ilk
+*.gif
 desktop.ini
