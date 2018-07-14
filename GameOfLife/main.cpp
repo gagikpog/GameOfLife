@@ -1,25 +1,26 @@
 #include "game.h"
+#include <string>
 
 int WndW = 1500, WndH = 900;
-int w = 150, h = 90;
+int w = 300, h = 180;
 bool **matrix1;
 bool **matrix2;
 bool step = true;
 bool pause = false;
 int Button;
+int speed = 50;
 
 void Display()
 {
 	glClearColor(0, 0, 0, 0);
 	glClear(GL_COLOR_BUFFER_BIT);
-
+	glutSetWindowTitle(("timer = "+std::to_string(speed)).c_str());
 	if(step)
 		PrintMatrix(matrix1, w, h);
 	else PrintMatrix(matrix2, w, h);
 
 	glutSwapBuffers();
 }
-
 
 void timer(int)
 {
@@ -29,21 +30,22 @@ void timer(int)
 	step = !step;
 	glutPostRedisplay();
 	if (!pause) 
-		glutTimerFunc(50, timer, 0); 
+		glutTimerFunc(speed, timer, 0); 
 }
 
 void Keys(unsigned char key, int ax,int ay) 
 {
-	if (key == 'p')
+	bool ** matrixPtr = matrix1;
+	if (!step)
+		matrixPtr = matrix2;
+	switch (key)
 	{
-		pause = !pause;		
+	case 'p':	case 'P': {
+		pause = !pause;
 		timer(0);
-	} 
-	if (key == 'r')
-	{
-		bool ** matrixPtr = matrix1;
-		if (!step)
-			matrixPtr = matrix2;
+		break;
+	}
+	case 'r':	case 'R': {
 		for (int i = 0; i < h; i++)
 		{
 			for (int j = 0; j < w; j++)
@@ -52,13 +54,38 @@ void Keys(unsigned char key, int ax,int ay)
 			}
 		}
 		glutPostRedisplay();
+		break;
+	}
+	case 'f':	case 'F': {
+		RandomFilling(matrixPtr, w, h);
+		glutPostRedisplay();
+		break; 
+	}
+	default:
+		break;
+	}
+
+}
+
+void Keys(int key, int ax, int ay)
+{
+	switch (key)
+	{
+	case GLUT_KEY_DOWN:
+		if (speed > 1)
+			speed-=2;
+		break;
+	case GLUT_KEY_UP:
+		if (speed < 1000)
+			speed+=2;
+		break;
+	default:
+		break;
 	}
 }
 
 void MouseMove(int ax, int ay)
 {
-//	if (!pause)
-//		return;
 	bool ** matrixPtr = matrix1;
 	if(!step)
 		matrixPtr = matrix2;
@@ -74,8 +101,6 @@ void MouseMove(int ax, int ay)
 
 void Mouse(int button, int state, int ax, int ay)
 {
-//	if (!pause)
-//		return;
 	bool ** matrixPtr = matrix1;
 	if (!step)
 		matrixPtr = matrix2;
@@ -110,10 +135,12 @@ int main(int argc,char** argv)
 	matrix1[3][3] = true;
 
 	timer(0);
+	srand(time(NULL));
 
 	glutMouseFunc(Mouse);
 	glutMotionFunc(MouseMove);
 	glutKeyboardFunc(Keys);
+	glutSpecialFunc(Keys);
 	glutDisplayFunc(Display);
 	glutMainLoop();
 	return 0;

@@ -7,4 +7,6 @@ GameOfLife/Release/
 *.pdb
 *.ilk
 *.gif
+*.ipdb
+*.iobj
 desktop.ini

@@ -1,17 +1,13 @@
 #include "game.h"
 
-inline int CountNeighbors(bool ** source,const int y,const int x,const int w,const int h)
+inline int CountNeighbors(bool ** source, const int y, const int x, const int w, const int h)
 {
 	int res = 0;
-	for (int i = y - 1; i <= y + 1 && i < h; i++)
+	for (int i = - 1; i <= 1; i++)
 	{
-		if (i < 0)
-			continue;
-		for (int j = x - 1; j <= x + 1 && j < w; j++)
+		for (int j = - 1; j <= 1; j++)
 		{
-			if (j < 0)
-				continue;
-			if (source[i][j])
+			if (source[(y + i + h) % h][(x + j + w) % w])
 				res++;
 		}
 	}
@@ -27,9 +23,7 @@ void NextGeneration(bool ** source, bool ** result, int w, int h)
 		for (int j = 0; j < w; j++)
 		{
 			int n = CountNeighbors(source, i, j, w, h);
-			if (source[i][j])
-				result[i][j] = (n == 3 || n == 2);
-			else result[i][j] = n == 3;
+			result[i][j] = (n == 3) || (n == 2) && source[i][j];
 		}
 	}
 }
@@ -61,4 +55,15 @@ bool ** CreateMatrix(int w, int h)
 		}
 	}
 	return res;
+}
+
+void RandomFilling(bool ** source, int w, int h)
+{
+	for (int i = 0; i < h; i++)
+	{
+		for (int j = 0; j < w; j++)
+		{
+			source[i][j] = rand() % 2;
+		}
+	}
 }
