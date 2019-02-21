@@ -1,4 +1,5 @@
 #include "game.h"
+#include <string>
 
 inline int CountNeighbors(bool ** source, const int y, const int x, const int w, const int h)
 {
@@ -16,16 +17,20 @@ inline int CountNeighbors(bool ** source, const int y, const int x, const int w,
 	return res;
 }
 
-void NextGeneration(bool ** source, bool ** result, int w, int h)
+unsigned long long int NextGeneration(bool ** source, bool ** result, int w, int h)
 {
+	unsigned long long int count = 0;
 	for (int i = 0; i < h; i++)
 	{
 		for (int j = 0; j < w; j++)
 		{
 			int n = CountNeighbors(source, i, j, w, h);
 			result[i][j] = (n == 3) || (n == 2) && source[i][j];
+			if (result[i][j])
+				count += i*h + j*j;
 		}
 	}
+	return count;
 }
 
 void PrintMatrix( bool ** source, int w, int h)
@@ -66,4 +71,11 @@ void RandomFilling(bool ** source, int w, int h)
 			source[i][j] = rand() % 2;
 		}
 	}
+}
+
+void drawString(float x, float y, std::string str )
+{
+	glRasterPos2f(x, y);
+	for (int i  = 0; i  < str.length(); i++)
+		glutBitmapCharacter(GLUT_BITMAP_9_BY_15, str[i]);
 }
