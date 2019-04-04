@@ -9,4 +9,5 @@ GameOfLife/Release/
 *.gif
 *.ipdb
 *.iobj
+*.o
 desktop.ini
